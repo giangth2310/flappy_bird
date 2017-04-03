@@ -1,8 +1,5 @@
 #ifndef SDL_utils__h
 #define SDL_utils__h
-#include <iostream>
-#include <SDL.h>
-
 void logSDLError(std::ostream& os,
                  const std::string &msg, bool fatal);
 

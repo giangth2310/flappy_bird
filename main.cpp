@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 #include "SDL_utils.h"
 #include "initiateObject.h"
 #include "Object.h"
@@ -27,9 +28,6 @@ int main(int argc, char *argv[])
     SDL_Renderer *renderer;
     initSDL(window, renderer, SCREEN_WIDTH, SCREEN_HEIGHT, "Flappy Bird");
 
-    if (TTF_Init() < 0)
-        cout << "Error: " << TTF_GetError() << endl;
-
     SDL_Texture *text = GetTextureOf(renderer, "Press SPACE to Play", 25);
     SDL_Rect textRect;
     SDL_QueryTexture(text, nullptr, nullptr, &textRect.w, &textRect.h);
@@ -43,6 +41,9 @@ int main(int argc, char *argv[])
     int lastUpdate = 0, currentTime = 0;
     const Uint8 *keyState;
     int score = 0;
+    Mix_Chunk *wing = Mix_LoadWAV("data/wing.wav");
+    Mix_Chunk *point = Mix_LoadWAV("data/point.wav");
+    Mix_Chunk *hit = Mix_LoadWAV("data/hit.wav");
 
     while (!gameOver)
     {
@@ -70,9 +71,12 @@ int main(int argc, char *argv[])
         {
             if (event.type == SDL_QUIT)
                 gameOver = true;
-            else if (event.type == SDL_KEYDOWN && !pressedSpace)
+            else if (event.type == SDL_KEYDOWN)
                 if (event.key.keysym.sym == SDLK_SPACE)
-                    pressedSpace = true;
+                    if (!pressedSpace)
+                    {
+                        pressedSpace = true;
+                    } else Mix_PlayChannel(-1, wing, 0);
         }
 
         if (currentTime - lastUpdate >= 150)
@@ -94,8 +98,14 @@ int main(int argc, char *argv[])
             }
             bird.position.y += GRAVITY;
             if (bird.position.y <0) bird.position.y = 0;
-            if (hitTheGrounds(bird, background_1)) gameOver = true;
-            if (hitTheBlocks(bird, *UpBlock_1, *DownBlock_1)) gameOver = true;
+            if (hitTheGrounds(bird, background_1))
+            {
+                gameOver = true;
+            }
+            if (hitTheBlocks(bird, *UpBlock_1, *DownBlock_1))
+            {
+                gameOver = true;
+            }
 
             updateBlock(renderer, *UpBlock_1, *DownBlock_1);
             SDL_RenderCopy(renderer, UpBlock_1->image  , &UpBlock_1->frame  , &UpBlock_1->position);
@@ -123,6 +133,7 @@ int main(int argc, char *argv[])
             {
                 score++;
                 isScore = false;
+                Mix_PlayChannel(-1, point, 0);
             }
             DisplayScore(renderer, score);
         }
@@ -131,20 +142,23 @@ int main(int argc, char *argv[])
         SDL_RenderPresent(renderer);
     }
 
+    Mix_HaltChannel(-1);
+    Mix_PlayChannel(-1, hit, 0);
+
     int highestScore = getHighestScore();
     if (highestScore < score) saveScore(score);
     DisplayGameOver(renderer, score, highestScore);
     DisplayMedal(renderer, score);
     SDL_RenderPresent(renderer);
 
-    cout << score << endl;
     waitUntilKeyPressed();
 
-    quitSDL(window, renderer);
-    SDL_DestroyTexture(text);
     delete UpBlock_1, DownBlock_1, UpBlock_2, DownBlock_2;
-    IMG_Quit();
-    TTF_Quit();
+    SDL_DestroyTexture(text);
+    Mix_FreeChunk(wing);
+    Mix_FreeChunk(hit);
+    Mix_FreeChunk(point);
+    quitSDL(window, renderer);
     return 0;
 }
 

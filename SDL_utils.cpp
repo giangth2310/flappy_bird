@@ -1,5 +1,8 @@
 #include <iostream>
 #include <SDL.h>
+#include <SDL_ttf.h>
+#include <SDL_mixer.h>
+#include <SDL_image.h>
 
 void logSDLError(std::ostream& os,
                  const std::string &msg, bool fatal)
@@ -29,6 +32,16 @@ void initSDL(SDL_Window* &window, SDL_Renderer* &renderer,
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     SDL_RenderSetLogicalSize(renderer, screenWidth, screenHeight);
+
+    if (TTF_Init() < 0)
+        std::cout << "Error: " << TTF_GetError() << std::endl;
+
+    int imgFlags = IMG_INIT_PNG;
+    if (IMG_Init(imgFlags) != imgFlags)
+        std::cout << "Error: " << IMG_GetError() << std::endl;
+
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+        std::cout << "Error: " << Mix_GetError() << std::endl;
 }
 
 void quitSDL(SDL_Window* window, SDL_Renderer* renderer)
@@ -36,6 +49,9 @@ void quitSDL(SDL_Window* window, SDL_Renderer* renderer)
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+	IMG_Quit();
+	TTF_Quit();
+	Mix_Quit();
 }
 
 void waitUntilKeyPressed()

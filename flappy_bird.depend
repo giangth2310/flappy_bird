@@ -1,21 +1,23 @@
 # depslib dependency file v1.0
-1491124111 source:c:\users\msi\desktop\flappy_bird\sdl_utils.cpp
+1491239121 source:c:\users\msi\desktop\flappy_bird\sdl_utils.cpp
 	<iostream>
 	<SDL.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	<SDL_image.h>
 
-1491189583 source:c:\users\msi\desktop\flappy_bird\main.cpp
+1491239911 source:c:\users\msi\desktop\flappy_bird\main.cpp
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
 	<SDL_ttf.h>
+	<SDL_mixer.h>
 	"SDL_utils.h"
 	"initiateObject.h"
 	"Object.h"
 	"display.h"
 
-1491127214 c:\users\msi\desktop\flappy_bird\sdl_utils.h
-	<iostream>
-	<SDL.h>
+1491236158 c:\users\msi\desktop\flappy_bird\sdl_utils.h
 
 1491184722 source:c:\users\msi\desktop\flappy_bird\initiateobject.cpp
 	<bits/stdc++.h>
@@ -28,7 +30,7 @@
 1491156997 c:\users\msi\desktop\flappy_bird\initiateobject.h
 	"Object.h"
 
-1491189583 source:c:\users\msi\desktop\flappy_bird\display.cpp
+1491236114 source:c:\users\msi\desktop\flappy_bird\display.cpp
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
