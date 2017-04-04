@@ -5,10 +5,6 @@
 
 using namespace std;
 
-const int SCREEN_WIDTH = 288;
-const int SCREEN_HEIGHT = 490;
-const int VELOCITY = 2;
-
 SDL_Texture* loadTexture(string filePath, SDL_Renderer* &renderTarget)
 {
     SDL_Texture* texture = nullptr;

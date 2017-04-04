@@ -4,9 +4,6 @@
 #include <SDL_ttf.h>
 #include "initiateObject.h"
 
-const int SCREEN_WIDTH = 288;
-const int SCREEN_HEIGHT = 490;
-
 using namespace std;
 
 string ToString(int i)
@@ -17,11 +14,10 @@ string ToString(int i)
     return str;
 }
 
-SDL_Texture *GetTextureOf(SDL_Renderer* &renderer, const string s, int TextSize)
+SDL_Texture *GetTextureOf(SDL_Renderer* &renderer, const string PrintedText, int TextSize,const SDL_Color textColor)
 {
     TTF_Font *font = TTF_OpenFont("data/04B_19__.TTF", TextSize);
-    SDL_Color textColor = {255, 255, 255, 255};
-    SDL_Surface *textSurface = TTF_RenderText_Solid(font, s.c_str(), textColor);
+    SDL_Surface *textSurface = TTF_RenderText_Solid(font, PrintedText.c_str(), textColor);
     SDL_Texture *text = SDL_CreateTextureFromSurface(renderer, textSurface);
     SDL_FreeSurface(textSurface);
     return text;
@@ -30,7 +26,7 @@ SDL_Texture *GetTextureOf(SDL_Renderer* &renderer, const string s, int TextSize)
 void DisplayScore(SDL_Renderer* &renderer, const int score)
 {
     string str = ToString(score);
-    SDL_Texture *text = GetTextureOf(renderer, str, 25);
+    SDL_Texture *text = GetTextureOf(renderer, str, 25, DEFAULT_COLOR);
     SDL_Rect textRect;
     SDL_QueryTexture(text, nullptr, nullptr, &textRect.w, &textRect.h);
     textRect.x = (SCREEN_WIDTH - textRect.w) / 2;
@@ -61,7 +57,7 @@ void saveScore(const int score)
     else cout << "Unable to open data file" << endl;
 }
 
-void DisplayGameOver(SDL_Renderer* &renderer, const int score, const int highestScore)
+void DisplayGameOver(SDL_Renderer* &renderer, const int score)
 {
     SDL_Texture* gameOver = loadTexture("data/scoreboard.png", renderer);
     SDL_Rect scoreBoard;
@@ -71,7 +67,7 @@ void DisplayGameOver(SDL_Renderer* &renderer, const int score, const int highest
     SDL_RenderCopy(renderer, gameOver, nullptr, &scoreBoard);
 
     string str = ToString(score);
-    SDL_Texture *text = GetTextureOf(renderer, str, 25);
+    SDL_Texture *text = GetTextureOf(renderer, str, 25, DEFAULT_COLOR);
     SDL_Rect textRect;
     SDL_QueryTexture(text, nullptr, nullptr, &textRect.w, &textRect.h);
     textRect.x = 230 - textRect.w;
@@ -79,8 +75,9 @@ void DisplayGameOver(SDL_Renderer* &renderer, const int score, const int highest
     SDL_RenderCopy(renderer, text, nullptr, &textRect);
     SDL_DestroyTexture(text);
 
+    int highestScore = getHighestScore();
     str = ToString(highestScore);
-    text = GetTextureOf(renderer, str, 25);
+    text = GetTextureOf(renderer, str, 25, DEFAULT_COLOR);
     SDL_QueryTexture(text, nullptr, nullptr, &textRect.w, &textRect.h);
     textRect.x = 230 - textRect.w;
     textRect.y = 225;
@@ -100,8 +97,8 @@ void DisplayMedal(SDL_Renderer* &renderer, const int score)
     medal.position.w = 50;
     medal.position.h = 60;
     SDL_QueryTexture(medal.image, nullptr, nullptr, &medal.imgWidth, &medal.imgHeight);
-    if (score > 30) Rank = GOLD;
-    else if (score > 20) Rank = SILVER;
+    if (score > GOLD_MEDAL_POINT) Rank = GOLD;
+    else if (score > SILVER_MEDAL_POINT) Rank = SILVER;
     else Rank = BRONZE;
     medal.frame.w = medal.imgWidth/3;
     medal.frame.h = medal.imgHeight;

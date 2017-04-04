@@ -10,11 +10,6 @@
 
 using namespace std;
 
-const int SCREEN_WIDTH = 288;
-const int SCREEN_HEIGHT = 490;
-const int VELOCITY = 3;
-const int GRAVITY = 2;
-
 Object bird, background_1, background_2, ground_1, ground_2;
 Object *UpBlock_1 = new Object, *DownBlock_1 = new Object,
        *UpBlock_2 = new Object, *DownBlock_2 = new Object;
@@ -28,7 +23,7 @@ int main(int argc, char *argv[])
     SDL_Renderer *renderer;
     initSDL(window, renderer, SCREEN_WIDTH, SCREEN_HEIGHT, "Flappy Bird");
 
-    SDL_Texture *text = GetTextureOf(renderer, "Press SPACE to Play", 25);
+    SDL_Texture *text = GetTextureOf(renderer, "Press SPACE to Play", 25, DEFAULT_COLOR);
     SDL_Rect textRect;
     SDL_QueryTexture(text, nullptr, nullptr, &textRect.w, &textRect.h);
     textRect.x = (SCREEN_WIDTH - textRect.w) / 2;
@@ -147,10 +142,11 @@ int main(int argc, char *argv[])
 
     int highestScore = getHighestScore();
     if (highestScore < score) saveScore(score);
-    DisplayGameOver(renderer, score, highestScore);
+    DisplayGameOver(renderer, score);
     DisplayMedal(renderer, score);
     SDL_RenderPresent(renderer);
 
+    SDL_Delay(1000);
     waitUntilKeyPressed();
 
     delete UpBlock_1, DownBlock_1, UpBlock_2, DownBlock_2;
