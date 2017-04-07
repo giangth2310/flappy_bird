@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     srand(time(0));
     SDL_Window *window;
     SDL_Renderer *renderer;
-    initSDL(window, renderer, SCREEN_WIDTH, SCREEN_HEIGHT, "Flappy Bird");
+    initSDL(window, renderer, SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE.c_str());
 
     SDL_Texture *text = GetTextureOf(renderer, "Press SPACE to Play", 25, DEFAULT_COLOR);
     SDL_Rect textRect;
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
                 DownBlock_1 = DownBlock_2;
                 UpBlock_2 = new Object;
                 DownBlock_2 = new Object;
-                initiateBlock(renderer, *UpBlock_2, *DownBlock_2);
+                initiateBlock(renderer, *UpBlock_2, *DownBlock_2, ground_1.position.h);
             }
 
             if (isScore && bird.position.x > UpBlock_1->position.x)
@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
                 isScore = false;
                 Mix_PlayChannel(-1, point, 0);
             }
-            DisplayScore(renderer, score);
+            displayScore(renderer, score);
         }
         else SDL_RenderCopy(renderer, text, nullptr, &textRect);
         SDL_RenderCopy(renderer, bird.image        , &bird.frame        , &bird.position);
@@ -142,8 +142,8 @@ int main(int argc, char *argv[])
 
     int highestScore = getHighestScore();
     if (highestScore < score) saveScore(score);
-    DisplayGameOver(renderer, score);
-    DisplayMedal(renderer, score);
+    displayGameover(renderer, score);
+    displayMedal(renderer, score);
     SDL_RenderPresent(renderer);
 
     SDL_Delay(1000);
@@ -162,14 +162,14 @@ void initiateEverything(SDL_Renderer* &renderer)
 {
     initiateBird(renderer, bird);
 
-    background_1.image = loadTexture("data/bg.png", renderer);
-    background_2.image = loadTexture("data/bg.png", renderer);
+    background_1.image = loadTexture(BACKGROUND_IMG_PATH.c_str(), renderer);
+    background_2.image = loadTexture(BACKGROUND_IMG_PATH.c_str(), renderer);
     initiateBackground(renderer, background_1, background_2);
 
-    ground_1.image = loadTexture("data/ground.png", renderer);
-    ground_2.image = loadTexture("data/ground.png", renderer);
+    ground_1.image = loadTexture(GROUND_IMG_PATH.c_str(), renderer);
+    ground_2.image = loadTexture(GROUND_IMG_PATH.c_str(), renderer);
     initiateGround(renderer, ground_1, ground_2, background_1);
 
-    initiateBlock(renderer, *UpBlock_1, *DownBlock_1);
-    initiateBlock(renderer, *UpBlock_2, *DownBlock_2);
+    initiateBlock(renderer, *UpBlock_1, *DownBlock_1, ground_1.position.h);
+    initiateBlock(renderer, *UpBlock_2, *DownBlock_2, ground_1.position.h);
 }
