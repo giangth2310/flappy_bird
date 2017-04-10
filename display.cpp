@@ -23,14 +23,36 @@ SDL_Texture *GetTextureOf(SDL_Renderer* &renderer, const string PrintedText, int
     return text;
 }
 
-void displayScore(SDL_Renderer* &renderer, const int score)
+//display text at (x,y)
+void displayText(SDL_Renderer* &renderer, const string &textInput, const int x = 0, const int y = 0)
+{
+    SDL_Texture *text = GetTextureOf(renderer, textInput, 25, DEFAULT_COLOR);
+    SDL_Rect textRect;
+    SDL_QueryTexture(text, nullptr, nullptr, &textRect.w, &textRect.h);
+    if (x == 0) textRect.x = (SCREEN_WIDTH - textRect.w) / 2;
+    else textRect.x = x;
+    textRect.y = y;
+    SDL_RenderCopy(renderer, text, nullptr, &textRect);
+    SDL_DestroyTexture(text);
+}
+
+//display score at (x,y)
+void displayScore(SDL_Renderer* &renderer, const int score, const int x = 0, const int y = 20)
 {
     string str = ToString(score);
     SDL_Texture *text = GetTextureOf(renderer, str, 25, DEFAULT_COLOR);
     SDL_Rect textRect;
     SDL_QueryTexture(text, nullptr, nullptr, &textRect.w, &textRect.h);
-    textRect.x = (SCREEN_WIDTH - textRect.w) / 2;
-    textRect.y = 20;
+    if (x == 0)
+    {
+        textRect.x = (SCREEN_WIDTH - textRect.w) / 2;
+        textRect.y = y;
+    }
+    else
+    {
+        textRect.x = x - textRect.w;
+        textRect.y = y;
+    }
     SDL_RenderCopy(renderer, text, nullptr, &textRect);
     SDL_DestroyTexture(text);
 }
@@ -57,36 +79,6 @@ void saveScore(const int score)
     else cout << "Unable to open data file" << endl;
 }
 
-void displayGameover(SDL_Renderer* &renderer, const int score)
-{
-    SDL_Texture* gameOver = loadTexture("data/scoreboard.png", renderer);
-    SDL_Rect scoreBoard;
-    SDL_QueryTexture(gameOver, nullptr, nullptr, &scoreBoard.w, &scoreBoard.h);
-    scoreBoard.x = (SCREEN_WIDTH - scoreBoard.w)/2;
-    scoreBoard.y = 80;
-    SDL_RenderCopy(renderer, gameOver, nullptr, &scoreBoard);
-
-    string str = ToString(score);
-    SDL_Texture *text = GetTextureOf(renderer, str, 25, DEFAULT_COLOR);
-
-    SDL_Rect textRect;
-    SDL_QueryTexture(text, nullptr, nullptr, &textRect.w, &textRect.h);
-    textRect.x = 230 - textRect.w;
-    textRect.y = 185;
-    SDL_RenderCopy(renderer, text, nullptr, &textRect);
-    SDL_DestroyTexture(text);
-
-    str = ToString(getHighestScore());
-    text = GetTextureOf(renderer, str, 25, DEFAULT_COLOR);
-    SDL_QueryTexture(text, nullptr, nullptr, &textRect.w, &textRect.h);
-    textRect.x = 230 - textRect.w;
-    textRect.y = 225;
-    SDL_RenderCopy(renderer, text, nullptr, &textRect);
-    SDL_DestroyTexture(text);
-
-    SDL_DestroyTexture(gameOver);
-}
-
 void displayMedal(SDL_Renderer* &renderer, const int score)
 {
     MedalRank Rank;
@@ -105,4 +97,22 @@ void displayMedal(SDL_Renderer* &renderer, const int score)
     medal.frame.x = medal.frame.w * Rank;
     medal.frame.y = 0;
     SDL_RenderCopy(renderer, medal.image, &medal.frame, &medal.position);
+}
+
+void displayGameover(SDL_Renderer* &renderer, const int score)
+{
+    SDL_Texture* gameOver = loadTexture("data/scoreboard.png", renderer);
+    SDL_Rect scoreBoard;
+    SDL_QueryTexture(gameOver, nullptr, nullptr, &scoreBoard.w, &scoreBoard.h);
+    scoreBoard.x = (SCREEN_WIDTH - scoreBoard.w)/2;
+    scoreBoard.y = 80;
+    SDL_RenderCopy(renderer, gameOver, nullptr, &scoreBoard);
+
+    displayScore(renderer, score, 230, 185);
+
+    displayScore(renderer, getHighestScore(), 230, 225);
+
+    displayMedal(renderer, score);
+
+    SDL_DestroyTexture(gameOver);
 }

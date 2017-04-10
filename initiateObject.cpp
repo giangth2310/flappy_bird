@@ -29,7 +29,7 @@ void updateObject(Object &object_1, Object &object_2)
     object_2.frame.w = object_2.position.w = object_2.frame.w + VELOCITY;
 }
 
-void initiateGround(SDL_Renderer* &renderer, Object &ground_1, Object &ground_2, const Object &background_1)
+void initGround(SDL_Renderer* &renderer, Object &ground_1, Object &ground_2, const Object &background_1)
 {
     SDL_QueryTexture(ground_1.image, nullptr, nullptr, &ground_1.imgWidth, &ground_1.imgHeight);
     ground_1.position.y = background_1.frame.h;
@@ -44,7 +44,7 @@ void initiateGround(SDL_Renderer* &renderer, Object &ground_1, Object &ground_2,
     ground_2.frame.x = ground_2.frame.y = ground_2.frame.w = ground_2.position.w = 0;
 }
 
-void initiateBackground(SDL_Renderer* &renderer, Object &background_1, Object &background_2)
+void initBackground(SDL_Renderer* &renderer, Object &background_1, Object &background_2)
 {
     SDL_QueryTexture(background_1.image, nullptr, nullptr, &background_1.imgWidth, &background_1.imgHeight);
     background_1.position.x = background_1.position.y = background_1.frame.x = background_1.frame.y = 0;
@@ -58,7 +58,7 @@ void initiateBackground(SDL_Renderer* &renderer, Object &background_1, Object &b
     background_2.frame.x = background_2.frame.y = background_2.frame.w = 0;
 }
 
-void initiateBird(SDL_Renderer* &renderer, Object &bird)
+void initBird(SDL_Renderer* &renderer, Object &bird)
 {
     bird.image = loadTexture(BIRD_IMG_PATH.c_str(), renderer);
     bird.position = BIRD_START_POSITION;
@@ -73,7 +73,7 @@ void updateBlock(SDL_Renderer* &renderer, Object &upBlock, Object &downBlock)
     upBlock.position.x = downBlock.position.x = upBlock.position.x - VELOCITY;
 }
 
-void initiateBlock(SDL_Renderer* &renderer, Object &upBlock, Object &downBlock, int groundHeight)
+void initBlock(SDL_Renderer* &renderer, Object &upBlock, Object &downBlock, int groundHeight)
 {
     upBlock.image = loadTexture(UPBLOCK_IMG_PATH.c_str(), renderer);
     SDL_QueryTexture(upBlock.image, nullptr, nullptr, &upBlock.imgWidth, &upBlock.imgHeight);

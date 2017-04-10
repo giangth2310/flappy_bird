@@ -4,7 +4,8 @@
 string ToString(int i);
 
 SDL_Texture *GetTextureOf(SDL_Renderer* &renderer, const string PrintedText, int TextSize, const SDL_Color textColor);
-void displayScore(SDL_Renderer* &renderer, const int score);
+void displayText(SDL_Renderer* &renderer, const string &textInput, const int x = 0, const int y = 0);
+void displayScore(SDL_Renderer* &renderer, const int score, const int x = 0, const int y = 20);
 void saveScore(const int score);
 int getHighestScore();
 

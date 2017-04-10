@@ -10,35 +10,61 @@
 
 using namespace std;
 
-Object bird, background_1, background_2, ground_1, ground_2;
-Object *UpBlock_1 = new Object, *DownBlock_1 = new Object,
-       *UpBlock_2 = new Object, *DownBlock_2 = new Object;
+    Object bird, background_1, background_2, ground_1, ground_2;
+    Object *UpBlock_1 = new Object, *DownBlock_1 = new Object,
+           *UpBlock_2 = new Object, *DownBlock_2 = new Object;
 
-void initiateEverything(SDL_Renderer* &renderer);
+void init(SDL_Renderer* &renderer);
+void play(SDL_Renderer* &renderer);
+bool tryAgain(SDL_Renderer* &renderer);
 
 int main(int argc, char *argv[])
 {
     srand(time(0));
-    SDL_Window *window;
-    SDL_Renderer *renderer;
+    SDL_Window *window = nullptr;
+    SDL_Renderer *renderer = nullptr;
     initSDL(window, renderer, SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE.c_str());
 
-    SDL_Texture *text = GetTextureOf(renderer, "Press SPACE to Play", 25, DEFAULT_COLOR);
-    SDL_Rect textRect;
-    SDL_QueryTexture(text, nullptr, nullptr, &textRect.w, &textRect.h);
-    textRect.x = (SCREEN_WIDTH - textRect.w) / 2;
-    textRect.y = 100;
+    do
+    {
+        play(renderer);
+    }
+    while (tryAgain(renderer));
 
-    initiateEverything(renderer);
+    delete UpBlock_1, DownBlock_1, UpBlock_2, DownBlock_2;
+    quitSDL(window, renderer);
+    return 0;
+}
+
+void init(SDL_Renderer* &renderer)
+{
+    initBird(renderer, bird);
+
+    background_1.image = loadTexture(BACKGROUND_IMG_PATH.c_str(), renderer);
+    background_2.image = loadTexture(BACKGROUND_IMG_PATH.c_str(), renderer);
+    initBackground(renderer, background_1, background_2);
+
+    ground_1.image = loadTexture(GROUND_IMG_PATH.c_str(), renderer);
+    ground_2.image = loadTexture(GROUND_IMG_PATH.c_str(), renderer);
+    initGround(renderer, ground_1, ground_2, background_1);
+
+    initBlock(renderer, *UpBlock_1, *DownBlock_1, ground_1.position.h);
+    initBlock(renderer, *UpBlock_2, *DownBlock_2, ground_1.position.h);
+}
+
+void play(SDL_Renderer* &renderer)
+{
+    init(renderer);
+
+    Mix_Chunk *wing  = Mix_LoadWAV("data/wing.wav");
+    Mix_Chunk *point = Mix_LoadWAV("data/point.wav");
+    Mix_Chunk *hit   = Mix_LoadWAV("data/hit.wav");
 
     SDL_Event event;
     bool gameOver = false, pressedSpace = false, isScore = true;
     int lastUpdate = 0, currentTime = 0;
-    const Uint8 *keyState;
+    const Uint8 *keyState = nullptr;
     int score = 0;
-    Mix_Chunk *wing = Mix_LoadWAV("data/wing.wav");
-    Mix_Chunk *point = Mix_LoadWAV("data/point.wav");
-    Mix_Chunk *hit = Mix_LoadWAV("data/hit.wav");
 
     while (!gameOver)
     {
@@ -47,17 +73,17 @@ int main(int argc, char *argv[])
         SDL_RenderCopy(renderer, background_2.image, &background_2.frame, &background_2.position);
         SDL_RenderCopy(renderer, ground_1.image    , &ground_1.frame    , &ground_1.position);
         SDL_RenderCopy(renderer, ground_2.image    , &ground_2.frame    , &ground_2.position);
-
+        //make background and ground endless moving
         updateObject(background_1, background_2);
         if (background_1.frame.w <= 0)
         {
-            initiateBackground(renderer, background_1, background_2);
+            initBackground(renderer, background_1, background_2);
         }
 
         updateObject(ground_1, ground_2);
         if (ground_1.frame.w <= 0)
         {
-            initiateGround(renderer, ground_1, ground_2, background_1);
+            initGround(renderer, ground_1, ground_2, background_1);
         }
 
         currentTime = SDL_GetTicks();
@@ -65,7 +91,7 @@ int main(int argc, char *argv[])
         while (SDL_PollEvent(&event) != 0)
         {
             if (event.type == SDL_QUIT)
-                gameOver = true;
+                return;
             else if (event.type == SDL_KEYDOWN)
                 if (event.key.keysym.sym == SDLK_SPACE)
                     if (!pressedSpace)
@@ -73,7 +99,7 @@ int main(int argc, char *argv[])
                         pressedSpace = true;
                     } else Mix_PlayChannel(-1, wing, 0);
         }
-
+        //handle bird animation
         if (currentTime - lastUpdate >= 150)
         {
             lastUpdate = currentTime;
@@ -83,7 +109,7 @@ int main(int argc, char *argv[])
                 bird.frame.x = 0;
             }
         }
-
+        //game start
         if (pressedSpace)
         {
             keyState = SDL_GetKeyboardState(nullptr);
@@ -96,10 +122,14 @@ int main(int argc, char *argv[])
             if (hitTheGrounds(bird, background_1))
             {
                 gameOver = true;
+                Mix_HaltChannel(-1);
+                Mix_PlayChannel(-1, hit, 0);
             }
             if (hitTheBlocks(bird, *UpBlock_1, *DownBlock_1))
             {
                 gameOver = true;
+                Mix_HaltChannel(-1);
+                Mix_PlayChannel(-1, hit, 0);
             }
 
             updateBlock(renderer, *UpBlock_1, *DownBlock_1);
@@ -117,11 +147,11 @@ int main(int argc, char *argv[])
             {
                 isScore = true;
                 delete UpBlock_1, DownBlock_1;
-                UpBlock_1 = UpBlock_2;
+                UpBlock_1   = UpBlock_2;
                 DownBlock_1 = DownBlock_2;
-                UpBlock_2 = new Object;
+                UpBlock_2   = new Object;
                 DownBlock_2 = new Object;
-                initiateBlock(renderer, *UpBlock_2, *DownBlock_2, ground_1.position.h);
+                initBlock(renderer, *UpBlock_2, *DownBlock_2, ground_1.position.h);
             }
 
             if (isScore && bird.position.x > UpBlock_1->position.x)
@@ -132,44 +162,40 @@ int main(int argc, char *argv[])
             }
             displayScore(renderer, score);
         }
-        else SDL_RenderCopy(renderer, text, nullptr, &textRect);
-        SDL_RenderCopy(renderer, bird.image        , &bird.frame        , &bird.position);
+        else displayText(renderer, "Press SPACE to play", 0, 100);
+        SDL_RenderCopy(renderer, bird.image, &bird.frame, &bird.position);
         SDL_RenderPresent(renderer);
     }
 
-    Mix_HaltChannel(-1);
-    Mix_PlayChannel(-1, hit, 0);
-
     int highestScore = getHighestScore();
     if (highestScore < score) saveScore(score);
+
     displayGameover(renderer, score);
-    displayMedal(renderer, score);
     SDL_RenderPresent(renderer);
 
-    SDL_Delay(1000);
-    waitUntilKeyPressed();
+    SDL_Delay(500);
 
-    delete UpBlock_1, DownBlock_1, UpBlock_2, DownBlock_2;
-    SDL_DestroyTexture(text);
     Mix_FreeChunk(wing);
-    Mix_FreeChunk(hit);
     Mix_FreeChunk(point);
-    quitSDL(window, renderer);
-    return 0;
+    Mix_FreeChunk(hit);
 }
 
-void initiateEverything(SDL_Renderer* &renderer)
+bool tryAgain(SDL_Renderer* &renderer)
 {
-    initiateBird(renderer, bird);
+    displayText(renderer, "Play again ? (y/n)", 0, 300);
+    SDL_RenderPresent(renderer);
 
-    background_1.image = loadTexture(BACKGROUND_IMG_PATH.c_str(), renderer);
-    background_2.image = loadTexture(BACKGROUND_IMG_PATH.c_str(), renderer);
-    initiateBackground(renderer, background_1, background_2);
-
-    ground_1.image = loadTexture(GROUND_IMG_PATH.c_str(), renderer);
-    ground_2.image = loadTexture(GROUND_IMG_PATH.c_str(), renderer);
-    initiateGround(renderer, ground_1, ground_2, background_1);
-
-    initiateBlock(renderer, *UpBlock_1, *DownBlock_1, ground_1.position.h);
-    initiateBlock(renderer, *UpBlock_2, *DownBlock_2, ground_1.position.h);
+    SDL_Event event;
+    while (SDL_WaitEvent(&event) != 0)
+    {
+        if (event.type == SDL_QUIT)
+            return false;
+        if (event.type == SDL_KEYDOWN)
+        {
+            if (event.key.keysym.sym == SDLK_y)
+                return true;
+            if (event.key.keysym.sym == SDLK_n)
+                return false;
+        }
+    }
 }
