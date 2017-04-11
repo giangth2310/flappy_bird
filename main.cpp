@@ -15,7 +15,7 @@ using namespace std;
            *UpBlock_2 = new Object, *DownBlock_2 = new Object;
 
 void init(SDL_Renderer* &renderer);
-void play(SDL_Renderer* &renderer);
+bool play(SDL_Renderer* &renderer);
 bool tryAgain(SDL_Renderer* &renderer);
 
 int main(int argc, char *argv[])
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 
     do
     {
-        play(renderer);
+        if (play(renderer)) break;
     }
     while (tryAgain(renderer));
 
@@ -52,7 +52,7 @@ void init(SDL_Renderer* &renderer)
     initBlock(renderer, *UpBlock_2, *DownBlock_2, ground_1.position.h);
 }
 
-void play(SDL_Renderer* &renderer)
+bool play(SDL_Renderer* &renderer)
 {
     init(renderer);
 
@@ -91,7 +91,7 @@ void play(SDL_Renderer* &renderer)
         while (SDL_PollEvent(&event) != 0)
         {
             if (event.type == SDL_QUIT)
-                return;
+                return true;
             else if (event.type == SDL_KEYDOWN)
                 if (event.key.keysym.sym == SDLK_SPACE)
                     if (!pressedSpace)
@@ -178,6 +178,7 @@ void play(SDL_Renderer* &renderer)
     Mix_FreeChunk(wing);
     Mix_FreeChunk(point);
     Mix_FreeChunk(hit);
+    return false;
 }
 
 bool tryAgain(SDL_Renderer* &renderer)
