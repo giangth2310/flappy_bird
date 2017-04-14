@@ -18,6 +18,8 @@ enum MedalRank
     BRONZE
 };
 
+const int FPS = 60;
+
 const int GOLD_MEDAL_POINT_MIN   = 30;
 const int SILVER_MEDAL_POINT_MIN = 20;
 

@@ -62,12 +62,14 @@ bool play(SDL_Renderer* &renderer)
 
     SDL_Event event;
     bool gameOver = false, pressedSpace = false, isScore = true;
-    int lastUpdate = 0, currentTime = 0;
+    long int lastUpdate = 0, currentTime = 0, loopStart = 0, timeEllapsed = 0;
     const Uint8 *keyState = nullptr;
     int score = 0;
 
     while (!gameOver)
     {
+        loopStart = SDL_GetTicks();
+
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, background_1.image, &background_1.frame, &background_1.position);
         SDL_RenderCopy(renderer, background_2.image, &background_2.frame, &background_2.position);
@@ -165,6 +167,10 @@ bool play(SDL_Renderer* &renderer)
         else displayText(renderer, "Press SPACE to play", 0, 100);
         SDL_RenderCopy(renderer, bird.image, &bird.frame, &bird.position);
         SDL_RenderPresent(renderer);
+
+        timeEllapsed = SDL_GetTicks() - loopStart;
+        int delayTime = 1000/FPS - timeEllapsed;
+        if (delayTime > 0) SDL_Delay(1000/FPS - timeEllapsed);
     }
 
     int highestScore = getHighestScore();
