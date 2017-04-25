@@ -46,6 +46,7 @@ void displayScore(SDL_Renderer* &renderer, const int score, const int x = 0, con
     SDL_QueryTexture(text, nullptr, nullptr, &textRect.w, &textRect.h);
     if (x == 0)
     {
+        //display at center of the screen
         textRect.x = (SCREEN_WIDTH - textRect.w) / 2;
         textRect.y = y;
     }
@@ -98,6 +99,7 @@ void displayMedal(SDL_Renderer* &renderer, const int score)
     medal.frame.x = medal.frame.w * Rank;
     medal.frame.y = 0;
     SDL_RenderCopy(renderer, medal.image, &medal.frame, &medal.position);
+    SDL_DestroyTexture(medal.image);
 }
 
 void displayGameover(SDL_Renderer* &renderer, const int score)

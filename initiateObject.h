@@ -4,7 +4,7 @@
 
 using namespace std;
 
-SDL_Texture* loadTexture(string filePath, SDL_Renderer* &renderTarget);
+SDL_Texture* loadTexture(const string& filePath, SDL_Renderer* &renderTarget);
 
 void initBird(SDL_Renderer* &renderer, Object &bird);
 void initBackground(SDL_Renderer* &renderer, Object &background_1, Object &background_2);

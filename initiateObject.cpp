@@ -5,7 +5,7 @@
 
 using namespace std;
 
-SDL_Texture* loadTexture(string filePath, SDL_Renderer* &renderer)
+SDL_Texture* loadTexture(const string& filePath, SDL_Renderer* &renderer)
 {
     SDL_Texture* texture = nullptr;
     SDL_Surface* surface = IMG_Load(filePath.c_str());
