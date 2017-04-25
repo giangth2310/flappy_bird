@@ -20,6 +20,7 @@ SDL_Texture *GetTextureOf(SDL_Renderer* &renderer, const string PrintedText, int
     SDL_Surface *textSurface = TTF_RenderText_Solid(font, PrintedText.c_str(), textColor);
     SDL_Texture *text = SDL_CreateTextureFromSurface(renderer, textSurface);
     SDL_FreeSurface(textSurface);
+    TTF_CloseFont(font);
     return text;
 }
 

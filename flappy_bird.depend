@@ -6,7 +6,7 @@
 	<SDL_mixer.h>
 	<SDL_image.h>
 
-1492192291 source:c:\users\msi\desktop\flappy_bird\main.cpp
+1492192395 source:c:\users\msi\desktop\flappy_bird\main.cpp
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
@@ -25,7 +25,7 @@
 	<SDL_image.h>
 	"Object.h"
 
-1492192358 c:\users\msi\desktop\flappy_bird\object.h
+1493145349 c:\users\msi\desktop\flappy_bird\object.h
 	<SDL.h>
 
 1491755490 c:\users\msi\desktop\flappy_bird\initiateobject.h
