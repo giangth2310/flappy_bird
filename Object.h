@@ -9,7 +9,11 @@ struct Object
     SDL_Rect position, frame;
     SDL_Texture *image = nullptr;
     int imgWidth, imgHeight;
-    ~Object() {delete image; image = nullptr;}
+    ~Object()
+    {
+        SDL_DestroyTexture(image);
+        image = nullptr;
+    }
 };
 
 enum MedalRank
