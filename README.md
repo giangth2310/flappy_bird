@@ -1,6 +1,8 @@
 # Flappy bird
 This is my first game project cloning [flappy bird](https://en.wikipedia.org/wiki/Flappy_Bird) of Nguyễn Hà Đông
+
 ![screenshot](data/screenshot.png)
+
 # Table of contents
 
 * [Installation](#installation)
