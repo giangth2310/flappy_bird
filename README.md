@@ -1,14 +1,35 @@
-This is my project: flappy bird written in C++ with SDL, SDL_image, SDL\_ttf and SDL\_mixer
+#Flappy bird
+This is my first game project cloning [flappy bird](https://en.wikipedia.org/wiki/Flappy_Bird) of Nguyễn Hà Đông
+![screenshot](data/screenshot.png)
+#Table of contents
 
-Base on my 0.1 project where I tested logic game (you can see it [here](https://github.com/giangth2310/flappy_bird_0.1)), I added animation and image to this version to make it look like the original version of Nguyễn Hà Đông.
+* [Installation](#installation)
+* [How to play](#how-to-play)
+* [Built with](#built-with)
+* [How to change the bird speed, game fps, etc.](#how-to-change-the-bird-speed,-game-fps,-etc.)
+* [How did I make screen endless scrolling?](#how-did-i-make-the-screen-endless-scrolling?)
 
-Something I think you don't understand when you read my code is **background_1** and **background\_2**
-So, look at the following image 
+##Installation
+Download or clone this folder to your computer and run file `bin/debug/flappy_bird.exe`
+Make sure that the score in file `data/score.txt` is 0
+##How to play
+Press `space` to play, `y` if you want to try again and `n` if you don't
+##Built with
+This game is written in C++ and built with:
 
-![Endless moving background - flappy bird project](http://imgur.com/97Q28IH.png)
+* [SDL2](https://www.libsdl.org/index.php)
+* [SDL_image](https://www.libsdl.org/projects/SDL_image/)
+* [SDL_ttf](https://www.libsdl.org/projects/SDL_ttf/)
+* [SDL_mixer](https://www.libsdl.org/projects/SDL_mixer/)
 
-When the **background_1** moves out of the main background, **background\_1** := **background\_2** and **background\_2** is initiated again. That is called fake scrolling. Similar to the ground and block.
+##How to change the bird speed, game fps, etc.
+You can change them in file `Object.h` and recompline the game with [Code Blocks](http://www.codeblocks.org/)
+##How did I make screen endless scrolling?
+Look at the following image:
+![back ground moving](data/bgmoving.png)
+When you read the code you will see some value named background_1, background_2
 
-When a up-block and a down-block move out of the screen, I add new up-block **(UpBlock\_2**) and down-block (**DownBlock\_2**) and delete the older one. **UpBlock_1** (**DownBlock\_1**) always point to the up-block (down-block) in the screen. 
+When the background_1 moves out of the main background, background_1 := background_2 and background_2 is initiated again. That is called fake scrolling. Similar to the ground and block.
 
-&copy; 2017, giangth2310
+When a up-block and a down-block move out of the screen, I add new up-block (UpBlock_2) and down-block (DownBlock_2) and delete the older one. UpBlock_1 (DownBlock_1) always point to the up-block (down-block) in the screen.
+&copy; 2017 [giangth2310](https://github.com/giangth2310)
