@@ -26,7 +26,9 @@ This game is written in C++ and built with:
 You can change them in file `Object.h` and recompline the game with [Code Blocks](http://www.codeblocks.org/)
 ## How did I make screen endless scrolling?
 Look at the following image:
+
 ![back ground moving](data/bgmoving.png)
+
 When you read the code you will see some value named background_1, background_2
 
 When the background_1 moves out of the main background, background_1 := background_2 and background_2 is initiated again. That is called fake scrolling. Similar to the ground and block.
