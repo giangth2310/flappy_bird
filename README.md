@@ -13,6 +13,7 @@ This is my first game project cloning [flappy bird](https://en.wikipedia.org/wik
 
 ## Installation
 Download or clone this folder to your computer and run file `bin/debug/flappy_bird.exe`
+
 Make sure that the score in file `data/score.txt` is 0
 ## How to play
 Press `space` to play, `y` if you want to try again and `n` if you don't
